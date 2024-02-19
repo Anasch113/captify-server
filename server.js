@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "http://localhost:5173"
+    origin: "https://web.captify.live"
   })
 )
 
@@ -101,7 +101,7 @@ app.get("/", (req, res) => {
   res.send("Hello world")
 })
 
-const [basic, pro, business] = ["price_1Ok0PQGjRSLCL52ubBnCRhLj", "price_1Ok0R5GjRSLCL52uUfuuIwMc", "price_1Ok0RuGjRSLCL52ufBxjtq1L"]
+const [basic, pro, business] = ["price_1OknB4GjRSLCL52uZbVbapOU", "price_1Ok0R5GjRSLCL52uUfuuIwMc", "price_1Ok0RuGjRSLCL52ufBxjtq1L"]
 
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
@@ -120,8 +120,8 @@ const stripeSession = async (plan) => {
           quantity: 1
         }
       ],
-      success_url: "http://localhost:5173/success",
-      cancel_url: "http://localhost:5173/cancel"
+      success_url: "https://web.captify.live/success",
+      cancel_url: "https://web.captify.live/cancel"
 
     })
     return session
@@ -136,12 +136,12 @@ app.post("/subscriptions", async (req, res) => {
   console.log(req.body);
   let planId = null;
 
-  if (plan == 29) {
+  if (plan == 10) {
     planId = basic
   }
-  else if (plan == 49) {
+  else if (plan == 20) {
     planId = pro
-  } else if (plan == 99) {
+  } else if (plan == 30) {
     planId = business
   }
 
@@ -182,7 +182,7 @@ app.post("/payment-success", async (req, res) => {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const user = await admin.auth().getUser(firebaseId);
           const planId = subscription.plan.id;
-          const planType = subscription.plan.amount === 2900 ? "basic" : "pro";
+          const planType = subscription.plan.amount === 1000 ? "basic" : "pro";
           const startDate = moment.unix(subscription.current_period_start).format('YYYY-MM-DD');
           const endDate = moment.unix(subscription.current_period_end).format('YYYY-MM-DD');
           const durationInSeconds = subscription.current_period_end - subscription.current_period_start;
@@ -221,7 +221,7 @@ admin.initializeApp({
 
 
 
-const PORT = process.env.PORT || 8000;
+const PORT =  3000;
 server.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
 });
